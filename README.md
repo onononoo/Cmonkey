@@ -10,7 +10,15 @@ Requires clang with the wasm32 target (e.g. `winget install LLVM.LLVM`):
 sh build.sh
 ```
 
-This produces `dist/chrome` and `dist/firefox`. Test the C core natively:
+This produces:
+
+| Output | For |
+| --- | --- |
+| `dist/Cmonkey.xpi` | Firefox install file |
+| `dist/Cmonkey-chrome.zip` | Chrome Web Store / Edge Add-ons upload |
+| `dist/chrome`, `dist/firefox` | Unpacked folders for development |
+
+Test the C core natively:
 
 ```bash
 gcc test.c -o test && ./test
@@ -18,9 +26,31 @@ gcc test.c -o test && ./test
 
 ## Install
 
-**Chromium (135+):** open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, pick `dist/chrome`. Then on Cmonkey's details page turn on **Allow User Scripts**.
+### Firefox (153+)
 
-**Firefox (153+):** open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, pick `dist/firefox/manifest.json`. Open the Cmonkey popup and click **Allow Cmonkey to run user scripts**.
+Open `Cmonkey.xpi` in Firefox (drag it into a window, or File > Open File), click **Add**, then open the Cmonkey popup and click **Allow Cmonkey to run user scripts**.
+
+Release Firefox only installs **signed** `.xpi` files. Signing is free and needs a Mozilla account:
+
+1. Create API keys at https://addons.mozilla.org/developers/addon/api/key/
+2. Run (keys are read from the environment):
+
+   ```bash
+   WEB_EXT_API_KEY=... WEB_EXT_API_SECRET=... npx web-ext sign --channel=unlisted -s dist/firefox -a dist
+   ```
+
+   The signed `.xpi` lands in `dist/` and installs on any Firefox.
+
+Unsigned builds install on Firefox Developer Edition / Nightly after setting `xpinstall.signatures.required` to `false` in `about:config`, or temporarily on any Firefox via `about:debugging#/runtime/this-firefox` > **Load Temporary Add-on** (removed on restart).
+
+### Chromium (135+)
+
+Chrome, Edge and Brave on Windows/macOS refuse install files that don't come from their stores. The options are:
+
+- **Store (one-click install for users):** upload `Cmonkey-chrome.zip` to the [Chrome Web Store](https://chrome.google.com/webstore/devconsole) ($5 one-time) or [Edge Add-ons](https://partner.microsoft.com/dashboard/microsoftedge/overview) (free).
+- **Developer mode:** open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, pick `dist/chrome`.
+
+Either way, turn on **Allow User Scripts** on Cmonkey's details page afterwards.
 
 ## Use
 
