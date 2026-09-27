@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  body { width: 420px; font: 13px system-ui; margin: 8px; }
+  textarea { width: 100%; height: 200px; box-sizing: border-box; font: 12px monospace; }
+  li { display: flex; justify-content: space-between; padding: 2px 0; }
+  #warn { color: #b00; }
+</style>
+<p id="warn" hidden>Turn on "Allow User Scripts" for Cmonkey in chrome://extensions.</p>
+<label for="code">Script</label>
+<textarea id="code" spellcheck="false" placeholder="// ==UserScript==
+// @name   My script
+// @match  *://*.example.com/*
+// ==/UserScript==
+alert('hi')"></textarea>
+<button id="run">Run on this tab</button>
+<button id="save">Save (auto-run on @match)</button>
+<ul id="list"></ul>
+<script type="module" src="popup.js"></script>
