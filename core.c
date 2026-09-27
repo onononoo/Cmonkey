@@ -61,7 +61,7 @@ static int glob(str p, str s) {
     return i == p.n;
 }
 
-// Chrome-style match pattern: scheme://host/path, e.g. *://*.example.com/*
+// WebExtension match pattern: scheme://host/path, e.g. *://*.example.com/*
 static int match_pattern(str pat, str url) {
     if (same(pat, S("<all_urls>"))) return 1;
     int ps = find(pat, S("://")), us = find(url, S("://"));

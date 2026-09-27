@@ -4,17 +4,17 @@ import { core } from './core.js';
 async function inject(phase, { tabId, frameId, url }) {
   if (frameId !== 0) return; // ponytail: top frame only, add @noframes handling to run in iframes
   const c = await core;
-  const { scripts = [] } = await chrome.storage.local.get('scripts');
+  const { scripts = [] } = await browser.storage.local.get('scripts');
   for (const code of scripts) {
     if (c.runAt(url, code) !== phase) continue;
-    chrome.userScripts.execute({
+    browser.userScripts.execute({
       target: { tabId, frameIds: [0] }, js: [{ code }], world: 'MAIN', injectImmediately: true,
     }).catch(console.error);
   }
 }
 
 // ponytail: onCommitted is "close to" document-start, not guaranteed before page scripts.
-// Switch to chrome.userScripts.register if exact timing matters.
-chrome.webNavigation.onCommitted.addListener(d => inject(1, d));
-chrome.webNavigation.onDOMContentLoaded.addListener(d => inject(2, d));
-chrome.webNavigation.onCompleted.addListener(d => inject(3, d));
+// Switch to browser.userScripts.register if exact timing matters.
+browser.webNavigation.onCommitted.addListener(d => inject(1, d));
+browser.webNavigation.onDOMContentLoaded.addListener(d => inject(2, d));
+browser.webNavigation.onCompleted.addListener(d => inject(3, d));

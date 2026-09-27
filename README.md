@@ -1,6 +1,6 @@
 # Cmonkey
 
-A tiny open-source userscript executor for Chromium browsers (Chrome, Edge, Brave, Opera…) and Firefox. The core (userscript header parsing and `@match`/`@include`/`@exclude` URL matching) is freestanding C compiled to WebAssembly. JavaScript only calls the browser APIs.
+A tiny open-source userscript executor for Firefox. The core (userscript header parsing and `@match`/`@include`/`@exclude` URL matching) is freestanding C compiled to WebAssembly. JavaScript only calls the browser APIs.
 
 ## Build
 
@@ -15,8 +15,8 @@ This produces:
 | Output | For |
 | --- | --- |
 | `dist/Cmonkey.xpi` | Firefox install file |
-| `dist/Cmonkey-chrome.zip` | Chrome Web Store / Edge Add-ons upload |
-| `dist/chrome`, `dist/firefox` | Unpacked folders for development |
+| `dist/firefox` | Unpacked folder for development and signing |
+| `dist/Cmonkey-source.zip` | Source upload for Mozilla review |
 
 Test the C core natively:
 
@@ -24,13 +24,11 @@ Test the C core natively:
 gcc test.c -o test && ./test
 ```
 
-## Install
+## Install (Firefox 153+)
 
-### Firefox (153+)
+Open the signed [`release/Cmonkey-0.1.1.xpi`](release/Cmonkey-0.1.1.xpi) in Firefox (drag it into a window, or File > Open File), click **Add**, then open the Cmonkey popup and click **Allow Cmonkey to run user scripts**.
 
-Open `Cmonkey.xpi` in Firefox (drag it into a window, or File > Open File), click **Add**, then open the Cmonkey popup and click **Allow Cmonkey to run user scripts**.
-
-Release Firefox only installs **signed** `.xpi` files. Signing is free and needs a Mozilla account:
+To sign a new build yourself (release Firefox only installs **signed** `.xpi` files; bump `version` in `manifest.json` first). Signing is free and needs a Mozilla account:
 
 1. Create API keys at https://addons.mozilla.org/developers/addon/api/key/
 2. Run (keys are read from the environment):
@@ -42,15 +40,6 @@ Release Firefox only installs **signed** `.xpi` files. Signing is free and needs
    The signed `.xpi` lands in `dist/` and installs on any Firefox.
 
 Unsigned builds install on Firefox Developer Edition / Nightly after setting `xpinstall.signatures.required` to `false` in `about:config`, or temporarily on any Firefox via `about:debugging#/runtime/this-firefox` > **Load Temporary Add-on** (removed on restart).
-
-### Chromium (135+)
-
-Chrome, Edge and Brave on Windows/macOS refuse install files that don't come from their stores. The options are:
-
-- **Store (one-click install for users):** upload `Cmonkey-chrome.zip` to the [Chrome Web Store](https://chrome.google.com/webstore/devconsole) ($5 one-time) or [Edge Add-ons](https://partner.microsoft.com/dashboard/microsoftedge/overview) (free).
-- **Developer mode:** open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, pick `dist/chrome`.
-
-Either way, turn on **Allow User Scripts** on Cmonkey's details page afterwards.
 
 ## Use
 
@@ -83,7 +72,7 @@ Scripts run in the page's main world with full access to it. Only run code you t
 | `core.js` | JS | Loads the wasm and passes strings in and out |
 | `background.js` | JS | Injects saved scripts on navigation |
 | `popup.html/js` | HTML/JS | Script editor, run button, saved list |
-| `manifest.chrome.json`, `manifest.firefox.json` | JSON | Per-browser manifests (the only difference between builds) |
+| `manifest.json` | JSON | Extension manifest |
 | `build.sh` | sh | Compiles the wasm and assembles `dist/` |
 
 License: GPL-3.0
