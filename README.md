@@ -36,7 +36,7 @@ Release Firefox only installs **signed** `.xpi` files. Signing is free and needs
 2. Run (keys are read from the environment):
 
    ```bash
-   WEB_EXT_API_KEY=... WEB_EXT_API_SECRET=... npx web-ext sign --channel=unlisted -s dist/firefox -a dist
+   read -p "JWT issuer: " WEB_EXT_API_KEY; read -sp "JWT secret: " WEB_EXT_API_SECRET; echo; export WEB_EXT_API_KEY WEB_EXT_API_SECRET; npx web-ext sign --channel=unlisted -s dist/firefox -a dist --upload-source-code dist/Cmonkey-source.zip
    ```
 
    The signed `.xpi` lands in `dist/` and installs on any Firefox.

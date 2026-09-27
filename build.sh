@@ -15,4 +15,8 @@ PY=$(command -v python || command -v python3)
 rm -f dist/Cmonkey.xpi dist/Cmonkey-chrome.zip
 (cd dist/firefox && "$PY" -m zipfile -c ../Cmonkey.xpi *)
 (cd dist/chrome && "$PY" -m zipfile -c ../Cmonkey-chrome.zip *)
-echo "built dist/chrome dist/firefox dist/Cmonkey.xpi dist/Cmonkey-chrome.zip"
+# Stores want the C source alongside the compiled wasm.
+rm -f dist/Cmonkey-source.zip
+"$PY" -m zipfile -c dist/Cmonkey-source.zip core.c test.c core.js background.js popup.html popup.js \
+  manifest.chrome.json manifest.firefox.json build.sh README.md LICENSE
+echo "built dist/chrome dist/firefox dist/Cmonkey.xpi dist/Cmonkey-chrome.zip dist/Cmonkey-source.zip"

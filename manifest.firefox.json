@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Cmonkey",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tiny userscript executor with a C/WebAssembly core.",
   "browser_specific_settings": {
     "gecko": {
-      "id": "cmonkey@cmonkey",
+      "id": "{92de523b-5485-4e00-acb8-f0cc1939de17}",
       "strict_min_version": "153.0",
       "data_collection_permissions": { "required": ["none"] }
     }

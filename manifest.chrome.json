@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Cmonkey",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tiny userscript executor with a C/WebAssembly core.",
   "minimum_chrome_version": "135",
   "permissions": ["userScripts", "webNavigation", "storage"],
