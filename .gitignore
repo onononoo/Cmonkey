@@ -1,0 +1,3 @@
+core.wasm
+dist/
+*.exe

@@ -1,16 +1,16 @@
 # Cmonkey
 
-A tiny open-source userscript executor for Chrome. The core (userscript header parsing and `@match`/`@include`/`@exclude` URL matching) is freestanding C compiled to WebAssembly. JavaScript only calls the browser APIs.
+A tiny open-source userscript executor for Chromium browsers (Chrome, Edge, Brave, Opera…) and Firefox. The core (userscript header parsing and `@match`/`@include`/`@exclude` URL matching) is freestanding C compiled to WebAssembly. JavaScript only calls the browser APIs.
 
 ## Build
 
 Requires clang with the wasm32 target (e.g. `winget install LLVM.LLVM`):
 
 ```bash
-clang --target=wasm32 -O2 -nostdlib -ffreestanding -Wl,--no-entry -o core.wasm core.c
+sh build.sh
 ```
 
-Test the C core natively:
+This produces `dist/chrome` and `dist/firefox`. Test the C core natively:
 
 ```bash
 gcc test.c -o test && ./test
@@ -18,8 +18,9 @@ gcc test.c -o test && ./test
 
 ## Install
 
-1. Open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, pick this folder.
-2. On Cmonkey's details page, turn on **Allow User Scripts** (Chrome 138+).
+**Chromium (135+):** open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, pick `dist/chrome`. Then on Cmonkey's details page turn on **Allow User Scripts**.
+
+**Firefox (153+):** open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, pick `dist/firefox/manifest.json`. Open the Cmonkey popup and click **Allow Cmonkey to run user scripts**.
 
 ## Use
 
@@ -52,5 +53,7 @@ Scripts run in the page's main world with full access to it. Only run code you t
 | `core.js` | JS | Loads the wasm and passes strings in and out |
 | `background.js` | JS | Injects saved scripts on navigation |
 | `popup.html/js` | HTML/JS | Script editor, run button, saved list |
+| `manifest.chrome.json`, `manifest.firefox.json` | JSON | Per-browser manifests (the only difference between builds) |
+| `build.sh` | sh | Compiles the wasm and assembles `dist/` |
 
 License: GPL-3.0

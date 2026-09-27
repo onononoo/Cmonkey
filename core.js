@@ -1,7 +1,7 @@
 // Thin bridge to core.wasm. Calls are sync once loaded, so the shared C buffer can't race.
 const enc = new TextEncoder(), dec = new TextDecoder();
 
-export const core = WebAssembly.instantiateStreaming(fetch('/core.wasm')).then(({ instance: { exports: c } }) => {
+export const core = fetch('/core.wasm').then(r => r.arrayBuffer()).then(WebAssembly.instantiate).then(({ instance: { exports: c } }) => {
   const mem = () => new Uint8Array(c.memory.buffer, c.buf(), c.buf_size());
   return {
     // encodeInto truncates at the buffer end; the header sits at the top so that's fine.

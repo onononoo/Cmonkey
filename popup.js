@@ -1,7 +1,13 @@
 import { core } from './core.js';
 
 const $ = id => document.getElementById(id);
-try { chrome.userScripts.getScripts(); } catch { $('warn').hidden = false; } // throws until the toggle is on
+// Chrome: API missing until the "Allow User Scripts" toggle is on.
+// Firefox: userScripts is an optional permission, granted from a click.
+try { chrome.userScripts.getScripts(); } catch {
+  const optional = chrome.runtime.getManifest().optional_permissions?.includes('userScripts');
+  $(optional ? 'grant' : 'warn').hidden = false;
+}
+$('grant').onclick = () => chrome.permissions.request({ permissions: ['userScripts'] }).then(ok => ok && location.reload());
 
 $('run').onclick = async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
